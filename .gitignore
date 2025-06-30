@@ -1,0 +1,54 @@
+# Ignore OS-specific files
+.DS_Store           # macOS folder attributes
+Thumbs.db           # Windows thumbnail cache
+*.swp               # Swap files (Vim, etc.)
+~$*                 # Temporary Office files
+
+# Ignore IDE-specific files
+.idea/              # JetBrains IDEs (IntelliJ, WebStorm, etc.)
+.vscode/            # Visual Studio Code settings
+*.suo               # Visual Studio user options
+*.user              # Visual Studio user files
+
+# Ignore build and dependency directories
+node_modules/       # Node.js dependencies
+dist/               # Built/compiled files
+build/              # Build output
+out/                # Another common build directory
+bin/                # Compiled binaries
+*.exe               # Executable files
+*.dll               # Dynamic-link libraries
+
+# Ignore log files
+*.log               # Log files
+npm-debug.log*      # npm debug logs
+yarn-debug.log*     # yarn debug logs
+yarn-error.log*     # yarn error logs
+
+# Ignore environment files
+.env                # Environment variables
+.env.local          # Local overrides
+.env.development    # Development env
+.env.test           # Test env
+.env.production     # Production env
+
+# Ignore dependency caches
+.cache/             # Various build tool caches
+.pnp                # Yarn PnP files
+
+# Ignore coverage directories
+coverage/           # Test coverage reports
+.nyc_output/        # NYC coverage data
+
+# Ignore package manager files
+yarn.lock           # Yarn lockfile (if using npm)
+package-lock.json   # npm lockfile (if using Yarn)
+
+# Ignore debug files
+debug/              # Debug output
+*.pid               # Process ID files
+
+# Ignore temp directories
+tmp/                # Temporary files
+temp/               # Temporary files
+.sqlite3
