@@ -51,4 +51,66 @@ debug/              # Debug output
 # Ignore temp directories
 tmp/                # Temporary files
 temp/               # Temporary files
-.sqlite3
+
+
+# Byte-compiled / optimized files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Build and distribution folders
+build/
+dist/
+*.egg-info/
+*.egg
+pip-wheel-metadata/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+*.cover
+.hypothesis/
+.pytest_cache/
+test-reports/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Environments
+.env
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE-specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Logs and databases
+*.log
+*.sqlite
+*.db
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/settings.json
+
+# Additional Files
+db.sqlite3

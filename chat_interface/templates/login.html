@@ -1,0 +1,177 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LetsChat | Login</title>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            color: #343a40;
+            background-image: url("{% static 'bg4.jpg' %}");
+            background-size: cover;
+        }
+
+        .dark-shade {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: -1;
+        }
+
+
+        .header {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .container {
+            max-width: 300px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.877);
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 93%;
+            padding: 9px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        input[type="submit"],
+        .signup-btn {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        input[type="submit"]:hover,
+        .signup-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .or-container {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .or-container p {
+            display: inline-block;
+            padding: 0 10px;
+            color: #999;
+        }
+
+        .divider {
+            border: none;
+            height: 1px;
+            background-color: #ccc;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="dark-shade"></div>
+
+    <div class="container">
+        <h2 class="header">Login</h2>
+        <form id="loginForm">
+            <input type="text" id="username" placeholder="Username" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <input type="submit" value="Login">
+        </form>
+        <hr class="divider">
+        <div class="or-container">
+            <p>or</p>
+        </div>
+        <button class="signup-btn" onclick="redirectToSignup()">Sign Up</button>
+    </div>
+
+    <script>
+
+        function redirectToSignup() {
+            window.location.href = `{% url "signup_page" %}`;
+        }
+
+        function validateUsername(username) {
+            var usernamePattern = /^[a-zA-Z][a-zA-Z0-9]{3,}$/;
+            return usernamePattern.test(username);
+        }
+
+        function validatePassword(password) {
+            var passwordPattern = /^\S{6,}$/;
+            return passwordPattern.test(password);
+        }
+
+        document.getElementById("loginForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            let username = document.getElementById("username").value;
+            let password = document.getElementById("password").value;
+
+            if (!validateUsername(username)) {
+                alert('Username must starts with alphabets and be at least 4 characters long and can only contain alphabets and digits, no spaces.');
+                return;
+            }
+
+            if (!validatePassword(password)) {
+                alert('Password must be at least 6 characters long and cannot contain spaces.');
+                return;
+            }
+
+            let formData = {
+                username: username,
+                password: password,
+            };
+
+            fetch('{% url "login_api" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            })
+                .then(response => {
+                    console.log(response);
+                    if (response.status === 200) {
+
+                        return response.json();
+                    } else {
+                        return response.json().then(data => {
+                            throw new Error(data.non_field_errors || "Login failed");
+                        });
+                    }
+                })
+                .then(data => {
+                    if (data && data.token) {
+                        sessionStorage.setItem('token', data.token);
+                        window.location.href = `{% url "home_page" %}`;
+                    } else {
+                        throw new Error("Token not found in response");
+                    }
+                })
+                .catch(error => {
+                    console.error('Login error:', error.message);
+                    alert(error.message);
+                });
+        });
+    </script>
+
+</body>
+
+</html>

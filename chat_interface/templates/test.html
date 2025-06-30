@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Room</title>
+    <style>
+        body {
+            background-image: url("{% static 'bg1.jpg' %}");
+            background-size: cover;
+            background-color: #f8f9fa;
+            color: #343a40;
+        }
+
+        .dark-shade {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: -1;
+        }
+
+        .container-fluid {
+            padding: 20px;
+        }
+
+        .header-text {
+            font-size: 32px;
+            margin: 0;
+            font-weight: 600;
+            color: rgb(243, 237, 237);
+        }
+
+        .header-text>span {
+            color: red;
+            font-size: 24px;
+            font-weight: 600;
+            padding-left: 3px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            color: rgb(12, 65, 236);
+        }
+
+        .box {
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            min-height: 228px;
+            background-color: rgba(255, 255, 255, 0);
+        }
+
+        .box-header {
+            margin-bottom: 20px;
+        }
+
+        .left-panel>.box {
+            background-color: rgba(255, 255, 255, 0.999);
+            border: 1px solid rgb(233, 232, 232);
+        }
+
+        .box-header>.left {
+            color: rgb(19, 94, 207);
+        }
+
+        .box-header>.right {
+            color: rgb(244, 246, 248);
+        }
+
+        .feature-card {
+            background-color: rgba(255, 255, 255, 0.7);
+            color: #0a50a0;
+            display: grid;
+            padding: 20px;
+            border-radius: 5px;
+            margin: auto;
+            height: 140px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .feature-card>p {
+            text-align: center;
+        }
+
+        .feature-card a {
+            color: #ffffff;
+            text-decoration: none;
+            display: grid;
+            text-align: center;
+            justify-content: center;
+        }
+
+        .btn-delete {
+            background-color: rgba(255, 255, 255, 0);
+        }
+
+        .card {
+            padding: 0px;
+            border: 1px solid rgb(211, 207, 207);
+            border-radius: 9px;
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+
+        .card-body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Styles for chat messages */
+        .card {
+            width: 400px;
+            margin: 0 auto;
+        }
+
+        .chat-message {
+            margin-bottom: 10px;
+            padding: 5px 10px;
+            border-radius: 10px;
+            max-width: 70%;
+            word-wrap: break-word;
+        }
+
+        .sender {
+            text-align: right;
+            background-color: #DCF8C6;
+            /* Light green */
+        }
+
+        .receiver {
+            text-align: left;
+            background-color: #EAEAEA;
+            /* Light gray */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <div class="card-header">Chat Room ({{receiver}})</div>
+        <div class="card-body" id="chat-messages">
+            <!-- Chat messages will be dynamically added here -->
+        </div>
+        <div class="card-footer">
+            <div class="input-group">
+                <input type="text" class="form-control" id="new-message" placeholder="Type your message here">
+                <button class="btn btn-primary" id="send-message">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const sendMessageButton = document.getElementById('send-message');
+            const newMessageInput = document.getElementById('new-message');
+            const chatMessages = document.getElementById('chat-messages');
+
+            function addChatMessage(message, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'chat-message';
+
+                if (sender === 'sender') {
+                    messageDiv.classList.add('sender');
+                } else {
+                    messageDiv.classList.add('receiver');
+                }
+
+                messageDiv.textContent = message;
+                chatMessages.appendChild(messageDiv);
+            }
+
+            function sendMessage() {
+                const message = newMessageInput.value.trim();
+                if (message) {
+                    addChatMessage(message, 'sender');
+                    newMessageInput.value = ''; // Clear input field after sending message
+                }
+            }
+
+            sendMessageButton.addEventListener('click', sendMessage);
+
+            newMessageInput.addEventListener('keypress', function (event) {
+                if (event.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+
+            // Example: Adding initial chat messages
+            addChatMessage("Hello!", 'receiver');
+            addChatMessage("Hi there!", 'sender');
+            addChatMessage("How are you?", 'receiver');
+
+            // Event listener to check if the target is a span
+            document.addEventListener('click', function (event) {
+                // Check if the target element is a <span>
+                if (event.target.tagName.toLowerCase() === 'span') {
+                    // Access the parent element of the <span>
+                    const parentElement = event.target.parentElement;
+                    // Now you can work with the parent element as needed
+                    console.log(parentElement);
+                }
+            });
+        });
+
+    </script>
+</body>
+
+</html>

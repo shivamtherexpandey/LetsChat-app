@@ -1,0 +1,279 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LetsChat | Chats</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <style>
+        body {
+            background-image: url("{% static 'bg1.jpg' %}");
+            background-size: cover;
+            background-color: #f8f9fa;
+            color: #343a40;
+        }
+
+        .dark-shade {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: -1;
+        }
+
+        .container-fluid {
+            padding: 20px;
+        }
+
+        .header-text {
+            font-size: 32px;
+            margin: 0;
+            font-weight: 600;
+            color: rgb(243, 237, 237);
+        }
+
+        .header-text>span {
+            color: red;
+            font-size: 24px;
+            font-weight: 600;
+            padding-left: 3px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            color: rgb(12, 65, 236);
+        }
+
+        .box {
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            min-height: 228px;
+            background-color: rgba(255, 255, 255, 0);
+        }
+
+        .box-header {
+            margin-bottom: 20px;
+        }
+
+        .left-panel>.box {
+            background-color: rgba(255, 255, 255, 0.999);
+            border: 1px solid rgb(233, 232, 232);
+        }
+
+        .box-header > .left {
+            color: rgb(19, 94, 207);
+        }
+
+        .box-header > .right {
+            color: rgb(244, 246, 248);
+        }
+
+        .feature-card {
+            background-color: rgba(255, 255, 255, 0.7);
+            color: #0a50a0;
+            display: grid;
+            padding: 20px;
+            border-radius: 5px;
+            margin: auto;
+            height: 140px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .feature-card > p {
+            text-align: center;
+        }
+
+        .feature-card a {
+            color: #ffffff;
+            text-decoration: none;
+            display: grid;
+            text-align: center;
+            justify-content: center;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="dark-shade"></div>
+
+    <div class="container-fluid">
+        <div class="header">
+            <h1 class="header-text">LetsChat<span>.</span></h1>
+            <button class="btn btn-danger" id="logoutBtn">Logout</button>
+        </div>
+
+        <div class="row">
+
+            <div class="left-panel col-2">
+                <div class="box">
+                    <div class="box-header">
+                        <h2 class="header-text left">User Details</h2>
+                    </div>
+                    <div class="user-details">
+                        <p id="username">Username:</p>
+                        <p id="contact">Contact:</p>
+                    </div>
+
+                    <div class="p my-3">
+                        <button onclick="window.location.href='/letschat/manage/contacts'"
+                            class="btn btn-danger">Contacts</button>
+                    </div>
+                    <div class="p">
+                        <button onclick="window.location.href='/letschat/home'" class="btn btn-danger">Home</button>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="right-panel col-10">
+                <div class="box">
+                    <div class="box-header">
+                        <h2 class="header-text right">Chats</h2>
+                    </div>
+
+                    <div class="row row-cols-5 my-4" id="saved-contact">
+                        <div class="col">
+                            <div class="feature-card">
+                                <div class="p text-center">Ankit</div>
+                                <div class="p text-center">8638047623</div><button type="button"
+                                    class="btn btn-primary btn-sm">Open</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+
+        function fetchContacts() {
+            var token = sessionStorage.getItem('token');
+
+            if (!token) {
+                alert("Invalid token! Please login again.");
+                window.location.href = "{% url 'login_page' %}";
+            } else {
+                $.ajax({
+                    url: '{% url "contacts_api" %}',
+                    type: 'GET',
+                    headers: {
+                        'token': token
+                    },
+                    success: function (data) {
+                        $('#saved-contact').empty();
+
+                        if (data.results.saved_contact.length === 0) {
+                            $('#saved-contact').append('<div class="col" style="color:white;">No Users in Saved Contact.</div>');
+                        } else {
+                            $.each(data.results.saved_contact, function (index, contact) {
+                                $('#saved-contact').append(
+                                    '<div class="col">' +
+                                    '<div class="feature-card" align="center">' + `<span class="material-symbols-outlined">chat_bubble</span>` +
+                                    '<div class="p text-center">' + contact.username + '</div>' +
+                                    '<div class="p text-center">' + contact.contact + '</div>' +
+                                    '<button type="button" class="btn btn-primary btn-sm" onclick="startChat(' + contact.contact + ')">Open</button>' +
+                                    '</div>' +
+                                    '</div>'
+                                );
+                            });
+                        }
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.error(xhr.responseText);
+                        alert('Error fetching contact data. Please try again later.');
+                    }
+                });
+
+            }
+        }
+
+        fetchContacts();
+
+        function startChat(contact) {
+            var token = sessionStorage.getItem('token');
+            $.ajax({
+                url: '{% url "start_chat_api" %}',
+                type: 'POST',
+                headers: {
+                    'token': token
+                },
+                data: {
+                    "contact": contact
+                },
+                success: function (data) {
+                    if (data.location) {
+                        window.location.href = data.location;
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    console.error(xhr.responseText);
+                    alert('Error starting chat. Please try again later.');
+                }
+            });
+        }
+
+
+        $(document).ready(function () {
+            var token = sessionStorage.getItem('token');
+            if (!token) {
+                window.location.href = '{% url "login_page" %}';
+            } else {
+                $.ajax({
+                    url: '{% url "me_api" %}',
+                    type: 'GET',
+                    headers: {
+                        'token': token
+                    },
+                    success: function (data) {
+                        $('.user-details').html('<p><strong>Username:</strong> ' + data.username + '</p><p><strong>Contact:</strong> ' + data.contact + '</p>');
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.error(xhr.responseText);
+                        alert(xhr.responseText);
+                        window.location.href = '{% url "login_page" %}';
+                    }
+                });
+            }
+
+            $('#logoutBtn').click(function () {
+                $.ajax({
+                    url: '{% url "logout_api" %}',
+                    type: 'DELETE',
+                    headers: {
+                        'token': token
+                    },
+                    success: function (data) {
+                        alert('Logout successful!');
+                        sessionStorage.removeItem('token');
+                        window.location.href = '{% url "login_page" %}';
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
